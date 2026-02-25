@@ -1,0 +1,11 @@
+C:\Users\Eva\Desktop\ИМ\TeploApp\TeploApp\bin\Debug\TeploApp.exe.config
+C:\Users\Eva\Desktop\ИМ\TeploApp\TeploApp\bin\Debug\TeploApp.exe
+C:\Users\Eva\Desktop\ИМ\TeploApp\TeploApp\bin\Debug\TeploApp.pdb
+C:\Users\Eva\Desktop\ИМ\TeploApp\TeploApp\obj\Debug\TeploApp.csproj.AssemblyReference.cache
+C:\Users\Eva\Desktop\ИМ\TeploApp\TeploApp\obj\Debug\TeploApp.Form1.resources
+C:\Users\Eva\Desktop\ИМ\TeploApp\TeploApp\obj\Debug\TeploApp.Properties.Resources.resources
+C:\Users\Eva\Desktop\ИМ\TeploApp\TeploApp\obj\Debug\TeploApp.csproj.GenerateResource.cache
+C:\Users\Eva\Desktop\ИМ\TeploApp\TeploApp\obj\Debug\TeploApp.csproj.CoreCompileInputs.cache
+C:\Users\Eva\Desktop\ИМ\TeploApp\TeploApp\obj\Debug\TeploApp.exe
+C:\Users\Eva\Desktop\ИМ\TeploApp\TeploApp\obj\Debug\TeploApp.pdb
+C:\Users\Eva\Desktop\ИМ\TeploApp\TeploApp\obj\Debug\TeploApp.exe.config
