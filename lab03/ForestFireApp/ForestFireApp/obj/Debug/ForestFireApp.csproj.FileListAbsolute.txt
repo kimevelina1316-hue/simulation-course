@@ -1,0 +1,11 @@
+C:\Users\Eva\Desktop\ИМ\лаба 3\ForestFireApp\ForestFireApp\bin\Debug\ForestFireApp.exe.config
+C:\Users\Eva\Desktop\ИМ\лаба 3\ForestFireApp\ForestFireApp\bin\Debug\ForestFireApp.exe
+C:\Users\Eva\Desktop\ИМ\лаба 3\ForestFireApp\ForestFireApp\bin\Debug\ForestFireApp.pdb
+C:\Users\Eva\Desktop\ИМ\лаба 3\ForestFireApp\ForestFireApp\obj\Debug\ForestFireApp.csproj.AssemblyReference.cache
+C:\Users\Eva\Desktop\ИМ\лаба 3\ForestFireApp\ForestFireApp\obj\Debug\ForestFireApp.Form1.resources
+C:\Users\Eva\Desktop\ИМ\лаба 3\ForestFireApp\ForestFireApp\obj\Debug\ForestFireApp.Properties.Resources.resources
+C:\Users\Eva\Desktop\ИМ\лаба 3\ForestFireApp\ForestFireApp\obj\Debug\ForestFireApp.csproj.GenerateResource.cache
+C:\Users\Eva\Desktop\ИМ\лаба 3\ForestFireApp\ForestFireApp\obj\Debug\ForestFireApp.csproj.CoreCompileInputs.cache
+C:\Users\Eva\Desktop\ИМ\лаба 3\ForestFireApp\ForestFireApp\obj\Debug\ForestFireApp.exe
+C:\Users\Eva\Desktop\ИМ\лаба 3\ForestFireApp\ForestFireApp\obj\Debug\ForestFireApp.pdb
+C:\Users\Eva\Desktop\ИМ\лаба 3\ForestFireApp\ForestFireApp\obj\Debug\ForestFireApp.exe.config
