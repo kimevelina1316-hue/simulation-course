@@ -1,0 +1,14 @@
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\bin\Debug\net8.0\RandomGenerator.exe
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\bin\Debug\net8.0\RandomGenerator.deps.json
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\bin\Debug\net8.0\RandomGenerator.runtimeconfig.json
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\bin\Debug\net8.0\RandomGenerator.dll
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\bin\Debug\net8.0\RandomGenerator.pdb
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\obj\Debug\net8.0\RandomGenerator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\obj\Debug\net8.0\RandomGenerator.AssemblyInfoInputs.cache
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\obj\Debug\net8.0\RandomGenerator.AssemblyInfo.cs
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\obj\Debug\net8.0\RandomGenerator.csproj.CoreCompileInputs.cache
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\obj\Debug\net8.0\RandomGenerator.dll
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\obj\Debug\net8.0\refint\RandomGenerator.dll
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\obj\Debug\net8.0\RandomGenerator.pdb
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\obj\Debug\net8.0\RandomGenerator.genruntimeconfig.cache
+C:\Users\Eva\Desktop\ИМ\лаба 4\RandomGenerator\RandomGenerator\obj\Debug\net8.0\ref\RandomGenerator.dll
