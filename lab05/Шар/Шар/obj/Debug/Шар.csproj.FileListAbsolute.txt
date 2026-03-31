@@ -1,0 +1,11 @@
+C:\Users\Eva\Desktop\ИМ\лаба5\Шар\Шар\bin\Debug\Шар.exe.config
+C:\Users\Eva\Desktop\ИМ\лаба5\Шар\Шар\bin\Debug\Шар.exe
+C:\Users\Eva\Desktop\ИМ\лаба5\Шар\Шар\bin\Debug\Шар.pdb
+C:\Users\Eva\Desktop\ИМ\лаба5\Шар\Шар\obj\Debug\Шар.csproj.AssemblyReference.cache
+C:\Users\Eva\Desktop\ИМ\лаба5\Шар\Шар\obj\Debug\Шар.Form1.resources
+C:\Users\Eva\Desktop\ИМ\лаба5\Шар\Шар\obj\Debug\Шар.Properties.Resources.resources
+C:\Users\Eva\Desktop\ИМ\лаба5\Шар\Шар\obj\Debug\Шар.csproj.GenerateResource.cache
+C:\Users\Eva\Desktop\ИМ\лаба5\Шар\Шар\obj\Debug\Шар.csproj.CoreCompileInputs.cache
+C:\Users\Eva\Desktop\ИМ\лаба5\Шар\Шар\obj\Debug\Шар.exe
+C:\Users\Eva\Desktop\ИМ\лаба5\Шар\Шар\obj\Debug\Шар.pdb
+C:\Users\Eva\Desktop\ИМ\лаба5\Шар\Шар\obj\Debug\Шар.exe.config
