@@ -1,0 +1,11 @@
+C:\Users\Eva\Desktop\ИМ\лаба5\Случайныесобытия\Случайныесобытия\bin\Debug\Случайныесобытия.exe.config
+C:\Users\Eva\Desktop\ИМ\лаба5\Случайныесобытия\Случайныесобытия\bin\Debug\Случайныесобытия.exe
+C:\Users\Eva\Desktop\ИМ\лаба5\Случайныесобытия\Случайныесобытия\bin\Debug\Случайныесобытия.pdb
+C:\Users\Eva\Desktop\ИМ\лаба5\Случайныесобытия\Случайныесобытия\obj\Debug\Случайныесобытия.csproj.AssemblyReference.cache
+C:\Users\Eva\Desktop\ИМ\лаба5\Случайныесобытия\Случайныесобытия\obj\Debug\Случайныесобытия.Form1.resources
+C:\Users\Eva\Desktop\ИМ\лаба5\Случайныесобытия\Случайныесобытия\obj\Debug\Случайныесобытия.Properties.Resources.resources
+C:\Users\Eva\Desktop\ИМ\лаба5\Случайныесобытия\Случайныесобытия\obj\Debug\Случайныесобытия.csproj.GenerateResource.cache
+C:\Users\Eva\Desktop\ИМ\лаба5\Случайныесобытия\Случайныесобытия\obj\Debug\Случайныесобытия.csproj.CoreCompileInputs.cache
+C:\Users\Eva\Desktop\ИМ\лаба5\Случайныесобытия\Случайныесобытия\obj\Debug\Случайныесобытия.exe
+C:\Users\Eva\Desktop\ИМ\лаба5\Случайныесобытия\Случайныесобытия\obj\Debug\Случайныесобытия.pdb
+C:\Users\Eva\Desktop\ИМ\лаба5\Случайныесобытия\Случайныесобытия\obj\Debug\Случайныесобытия.exe.config
