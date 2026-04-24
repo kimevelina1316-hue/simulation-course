@@ -1,0 +1,11 @@
+C:\Users\Eva\Desktop\ИМ\лаба6\6 лабораторная\6 лабораторная\bin\Debug\6 лабораторная.exe.config
+C:\Users\Eva\Desktop\ИМ\лаба6\6 лабораторная\6 лабораторная\bin\Debug\6 лабораторная.exe
+C:\Users\Eva\Desktop\ИМ\лаба6\6 лабораторная\6 лабораторная\bin\Debug\6 лабораторная.pdb
+C:\Users\Eva\Desktop\ИМ\лаба6\6 лабораторная\6 лабораторная\obj\Debug\6 лабораторная.csproj.AssemblyReference.cache
+C:\Users\Eva\Desktop\ИМ\лаба6\6 лабораторная\6 лабораторная\obj\Debug\_6_лабораторная.MainForm.resources
+C:\Users\Eva\Desktop\ИМ\лаба6\6 лабораторная\6 лабораторная\obj\Debug\_6_лабораторная.Properties.Resources.resources
+C:\Users\Eva\Desktop\ИМ\лаба6\6 лабораторная\6 лабораторная\obj\Debug\6 лабораторная.csproj.GenerateResource.cache
+C:\Users\Eva\Desktop\ИМ\лаба6\6 лабораторная\6 лабораторная\obj\Debug\6 лабораторная.csproj.CoreCompileInputs.cache
+C:\Users\Eva\Desktop\ИМ\лаба6\6 лабораторная\6 лабораторная\obj\Debug\6 лабораторная.exe
+C:\Users\Eva\Desktop\ИМ\лаба6\6 лабораторная\6 лабораторная\obj\Debug\6 лабораторная.pdb
+C:\Users\Eva\Desktop\ИМ\лаба6\6 лабораторная\6 лабораторная\obj\Debug\6 лабораторная.exe.config
