@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Марковская модель погоды</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 20px;
+        }
+        .sidebar {
+            background: #2d3748;
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            height: fit-content;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+        }
+        .sidebar h2 {
+            margin-bottom: 25px;
+            text-align: center;
+            color: #68d391;
+            font-size: 1.6em;
+        }
+        .matrix-input { margin-bottom: 25px; }
+        .matrix-input label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: bold;
+            color: #a0aec0;
+            font-size: 0.95em;
+        }
+        .matrix-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .matrix-input input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #4a5568;
+            border-radius: 5px;
+            background: #1a202c;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1em;
+        }
+        .control-group { margin-bottom: 18px; }
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a0aec0;
+            font-size: 0.95em;
+        }
+        .control-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #4a5568;
+            border-radius: 5px;
+            background: #1a202c;
+            color: white;
+            font-size: 1em;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s, opacity 0.2s;
+            color: white;
+            font-size: 1em;
+        }
+        button:active { transform: scale(0.98); }
+        .btn-simulate { background: #48bb78; }
+        .btn-simulate:hover { background: #38a169; }
+        .btn-start { background: #4299e1; }
+        .btn-start:hover { background: #3182ce; }
+        .btn-reset { background: #ed8936; }
+        .btn-reset:hover { background: #dd6b20; }
+        .btn-export { background: #9f7aea; }
+        .btn-export:hover { background: #805ad5; }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            height: 500px;
+            position: relative;
+        }
+        .chart-container h3 {
+            margin-bottom: 20px;
+            color: #2d3748;
+            text-align: center;
+            font-size: 1.3em;
+        }
+        
+        .status {
+            background: #1a202c;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 25px;
+            text-align: center;
+            font-size: 15px;
+            color: #a0aec0;
+        }
+        .stats {
+            margin-top: 20px;
+            padding: 15px;
+            background: #1a202c;
+            border-radius: 5px;
+        }
+        .stats h4 {
+            margin-bottom: 15px;
+            color: #68d391;
+            font-size: 1.1em;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #4a5568;
+            font-size: 1em;
+        }
+        .stat-row span:first-child { 
+            font-weight: bold;
+            min-width: 120px;
+        }
+        .stat-row span:last-child {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>МАТРИЦА Q</h2>
+            
+            <div class="matrix-input">
+                <label>Матрица интенсивностей:</label>
+                <div class="matrix-row">
+                    <input type="number" id="q00" value="-0.4" step="0.01">
+                    <input type="number" id="q01" value="0.3" step="0.01">
+                    <input type="number" id="q02" value="0.1" step="0.01">
+                </div>
+                <div class="matrix-row">
+                    <input type="number" id="q10" value="0.4" step="0.01">
+                    <input type="number" id="q11" value="-0.8" step="0.01">
+                    <input type="number" id="q12" value="0.4" step="0.01">
+                </div>
+                <div class="matrix-row">
+                    <input type="number" id="q20" value="0.1" step="0.01">
+                    <input type="number" id="q21" value="0.4" step="0.01">
+                    <input type="number" id="q22" value="-0.5" step="0.01">
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label>Дней для моделирования:</label>
+                <input type="number" id="totalDays" value="65" min="1">
+            </div>
+            
+            <div class="control-group">
+                <label>Начальное состояние:</label>
+                <input type="number" id="initialState" value="1" min="1" max="3">
+            </div>
+            
+            <button class="btn-simulate" onclick="simulate()">📊 Смоделировать</button>
+            <button class="btn-start" onclick="startRealTime()">▶ Старт (реальное время)</button>
+            <button class="btn-reset" onclick="resetAll()">🔄 Сброс</button>
+            <button class="btn-export" onclick="exportToCSV()">💾 Экспорт в CSV</button>
+            
+            <div class="status" id="status">Готов к моделированию</div>
+            
+            <div class="stats" id="stats" style="display: none;">
+                <h4>Статистика:</h4>
+                <div id="statsContent"></div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="chart-container">
+                <h3>Хронология погоды (дни)</h3>
+                <canvas id="timelineChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Сходимость к стационарному распределению</h3>
+                <canvas id="convergenceChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let simulationData = [];
+        let timelineChart = null;
+        let convergenceChart = null;
+        let isRunning = false;
+        let stopSimulation = false;
+
+        const stateNames = ['Ясно', 'Облачно', 'Пасмурно'];
+        const stateColors = ['#F6E05E', '#A0AEC0', '#4A5568'];
+
+        function getMatrixQ() {
+            return [
+                [parseFloat(document.getElementById('q00').value), 
+                 parseFloat(document.getElementById('q01').value), 
+                 parseFloat(document.getElementById('q02').value)],
+                [parseFloat(document.getElementById('q10').value), 
+                 parseFloat(document.getElementById('q11').value), 
+                 parseFloat(document.getElementById('q12').value)],
+                [parseFloat(document.getElementById('q20').value), 
+                 parseFloat(document.getElementById('q21').value), 
+                 parseFloat(document.getElementById('q22').value)]
+            ];
+        }
+
+        function generateExponential(lambda) {
+            const u = Math.random();
+            return -Math.log(u) / lambda;
+        }
+
+        function getNextState(currentState, Q) {
+            const intensities = [];
+            let sumIntensity = 0;
+            
+            for (let j = 0; j < 3; j++) {
+                if (j !== currentState) {
+                    intensities[j] = Q[currentState][j];
+                    sumIntensity += intensities[j];
+                }
+            }
+            
+            const r = Math.random() * sumIntensity;
+            let cumulative = 0;
+            
+            for (let j = 0; j < 3; j++) {
+                if (j !== currentState) {
+                    cumulative += intensities[j];
+                    if (r <= cumulative) return j;
+                }
+            }
+            return (currentState + 1) % 3;
+        }
+
+        function calculateStationaryDistribution(Q) {
+            let pi = [1/3, 1/3, 1/3];
+            
+            for (let iter = 0; iter < 1000; iter++) {
+                const nextPi = [0, 0, 0];
+                
+                for (let j = 0; j < 3; j++) {
+                    let sumIn = 0;
+                    for (let i = 0; i < 3; i++) {
+                        if (i !== j) {
+                            sumIn += pi[i] * Q[i][j];
+                        }
+                    }
+                    nextPi[j] = sumIn / (-Q[j][j]);
+                }
+                
+                const sumPi = nextPi.reduce((a, b) => a + b, 0);
+                pi = nextPi.map(p => p / sumPi);
+            }
+            
+            return pi;
+        }
+
+        function runSimulation(realTime = false) {
+            const Q = getMatrixQ();
+            const totalDays = parseFloat(document.getElementById('totalDays').value);
+            let currentState = parseInt(document.getElementById('initialState').value) - 1;
+            let time = 0;
+            const timeInState = [0, 0, 0];
+            simulationData = [];
+            
+            while (time < totalDays) {
+                const lambda = -Q[currentState][currentState];
+                const holdingTime = generateExponential(lambda);
+                
+                if (time + holdingTime >= totalDays) {
+                    const remainingTime = totalDays - time;
+                    timeInState[currentState] += remainingTime;
+                    time = totalDays;
+                    break;
+                }
+                
+                timeInState[currentState] += holdingTime;
+                time += holdingTime;
+                
+                const nextState = getNextState(currentState, Q);
+                
+                simulationData.push({
+                    time: time,
+                    fromState: currentState,
+                    toState: nextState,
+                    duration: holdingTime
+                });
+                
+                currentState = nextState;
+                
+                if (stopSimulation) break;
+            }
+            
+            return { time, timeInState, totalDays, currentState };
+        }
+
+        function simulate() {
+            if (isRunning) return;
+            
+            document.getElementById('status').textContent = 'Моделирование...';
+            stopSimulation = false;
+            
+            const result = runSimulation(false);
+            
+            if (!stopSimulation) {
+                displayResults(result);
+                document.getElementById('status').textContent = 'Моделирование завершено';
+            } else {
+                document.getElementById('status').textContent = 'Моделирование остановлено';
+            }
+        }
+
+        async function startRealTime() {
+            if (isRunning) return;
+            isRunning = true;
+            stopSimulation = false;
+            
+            document.getElementById('status').textContent = 'Моделирование в реальном времени...';
+            
+            const Q = getMatrixQ();
+            const totalDays = parseFloat(document.getElementById('totalDays').value);
+            let currentState = parseInt(document.getElementById('initialState').value) - 1;
+            let time = 0;
+            const timeInState = [0, 0, 0];
+            simulationData = [];
+            
+            const step = () => {
+                if (stopSimulation || time >= totalDays) {
+                    isRunning = false;
+                    displayResults({ time, timeInState, totalDays, currentState });
+                    document.getElementById('status').textContent = 'Моделирование завершено';
+                    return;
+                }
+                
+                const lambda = -Q[currentState][currentState];
+                const holdingTime = generateExponential(lambda);
+                
+                if (time + holdingTime >= totalDays) {
+                    const remainingTime = totalDays - time;
+                    timeInState[currentState] += remainingTime;
+                    time = totalDays;
+                } else {
+                    timeInState[currentState] += holdingTime;
+                    time += holdingTime;
+                    
+                    const nextState = getNextState(currentState, Q);
+                    
+                    simulationData.push({
+                        time: time,
+                        fromState: currentState,
+                        toState: nextState,
+                        duration: holdingTime
+                    });
+                    
+                    currentState = nextState;
+                }
+                
+                displayResults({ time, timeInState, totalDays, currentState }, true);
+                setTimeout(step, 50);
+            };
+            
+            step();
+        }
+
+        function displayResults(result, realTime = false) {
+            const { time, timeInState, totalDays } = result;
+            const empirical = timeInState.map(t => t / totalDays);
+            const theoretical = calculateStationaryDistribution(getMatrixQ());
+            
+            updateTimelineChart(realTime);
+            updateConvergenceChart(empirical, theoretical, realTime);
+            
+            if (!realTime) {
+                const statsDiv = document.getElementById('stats');
+                const statsContent = document.getElementById('statsContent');
+                statsDiv.style.display = 'block';
+                
+                let statsHTML = '';
+                for (let i = 0; i < 3; i++) {
+                    const diff = Math.abs(empirical[i] - theoretical[i]);
+                    statsHTML += `
+                        <div class="stat-row">
+                            <span>${stateNames[i]}</span>
+                            <span>Эмп: ${empirical[i].toFixed(4)} | Теор: ${theoretical[i].toFixed(4)} | Δ: ${diff.toFixed(4)}</span>
+                        </div>
+                    `;
+                }
+                statsContent.innerHTML = statsHTML;
+            }
+        }
+
+        function updateTimelineChart(realTime = false) {
+            const ctx = document.getElementById('timelineChart').getContext('2d');
+            
+            const datasets = [];
+            for (let state = 0; state < 3; state++) {
+                const data = simulationData
+                    .map((d, i) => ({
+                        x: d.time,
+                        y: d.toState === state ? state + 1 : null
+                    }))
+                    .filter(p => p.y !== null);
+                
+                datasets.push({
+                    label: stateNames[state],
+                    data: data,
+                    backgroundColor: stateColors[state],
+                    pointRadius: 4,
+                    showLine: false
+                });
+            }
+            
+            if (timelineChart) timelineChart.destroy();
+            
+            timelineChart = new Chart(ctx, {
+                type: 'scatter',
+                data: { datasets: datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'День' },
+                            type: 'linear',
+                            min: 0,
+                            max: parseFloat(document.getElementById('totalDays').value) || 65,
+                            ticks: {
+                                stepSize: 10,
+                                maxTicksLimit: 10
+                            }
+                        },
+                        y: {
+                            title: { display: true, text: 'Состояние' },
+                            min: 0.5,
+                            max: 3.5,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    return stateNames[value - 1];
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateConvergenceChart(empirical, theoretical, realTime = false) {
+            const ctx = document.getElementById('convergenceChart').getContext('2d');
+            
+            const labels = [];
+            const dataClear = [];
+            const dataCloudy = [];
+            const dataOvercast = [];
+            
+            let currentTime = 0;
+            const timeInState = [0, 0, 0];
+            let currentState = parseInt(document.getElementById('initialState').value) - 1;
+            
+            for (let i = 0; i < simulationData.length; i++) {
+                const data = simulationData[i];
+                timeInState[currentState] += data.duration;
+                currentTime = data.time;
+                
+                labels.push(currentTime.toFixed(1));
+                const total = timeInState.reduce((a, b) => a + b, 0);
+                dataClear.push(timeInState[0] / total);
+                dataCloudy.push(timeInState[1] / total);
+                dataOvercast.push(timeInState[2] / total);
+                
+                currentState = data.toState;
+            }
+            
+            if (convergenceChart) convergenceChart.destroy();
+            
+            let maxVal = 0.5;
+            const allValues = [...dataClear, ...dataCloudy, ...dataOvercast];
+            if (allValues.length > 0) {
+                const realMax = Math.max(...allValues);
+                if (realMax > maxVal) {
+                    maxVal = realMax + 0.05;
+                }
+            }
+
+            convergenceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Факт: Ясно', data: dataClear, borderColor: '#F6E05E', tension: 0.3, pointRadius: 0, borderWidth: 2 },
+                        { label: 'Факт: Облачно', data: dataCloudy, borderColor: '#A0AEC0', tension: 0.3, pointRadius: 0, borderWidth: 2 },
+                        { label: 'Факт: Пасмурно', data: dataOvercast, borderColor: '#4A5568', tension: 0.3, pointRadius: 0, borderWidth: 2 },
+                        { label: 'Теор: Ясно', data: Array(labels.length).fill(theoretical[0]), borderColor: '#F6E05E', borderDash: [5, 5], pointRadius: 0 },
+                        { label: 'Теор: Облачно', data: Array(labels.length).fill(theoretical[1]), borderColor: '#A0AEC0', borderDash: [5, 5], pointRadius: 0 },
+                        { label: 'Теор: Пасмурно', data: Array(labels.length).fill(theoretical[2]), borderColor: '#4A5568', borderDash: [5, 5], pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { 
+                            title: { display: true, text: 'Дни' },
+                            ticks: {
+                                maxTicksLimit: 15
+                            }
+                        },
+                        y: {
+                            title: { display: true, text: 'Доля времени' },
+                            min: 0,
+                            max: maxVal,
+                            ticks: { 
+                                stepSize: 0.05,
+                                maxTicksLimit: 12
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top' }
+                    }
+                }
+            });
+        }
+
+        function resetAll() {
+            stopSimulation = true;
+            isRunning = false;
+            simulationData = [];
+            
+            if (timelineChart) { timelineChart.destroy(); timelineChart = null; }
+            if (convergenceChart) { convergenceChart.destroy(); convergenceChart = null; }
+            
+            document.getElementById('status').textContent = 'Готов к моделированию';
+            document.getElementById('stats').style.display = 'none';
+            
+            const totalDays = parseFloat(document.getElementById('totalDays').value) || 65;
+            
+            const ctx1 = document.getElementById('timelineChart').getContext('2d');
+            timelineChart = new Chart(ctx1, {
+                type: 'scatter',
+                data: { 
+                    datasets: [
+                        { label: 'Ясно', data: [], backgroundColor: '#F6E05E', pointRadius: 0 },
+                        { label: 'Облачно', data: [], backgroundColor: '#A0AEC0', pointRadius: 0 },
+                        { label: 'Пасмурно', data: [], backgroundColor: '#4A5568', pointRadius: 0 }
+                    ] 
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { 
+                            type: 'linear', 
+                            position: 'bottom', 
+                            min: 0, 
+                            max: totalDays, 
+                            title: { display: true, text: 'День' },
+                            ticks: { stepSize: 10, maxTicksLimit: 10 }
+                        },
+                        y: { 
+                            min: 0.5, 
+                            max: 3.5, 
+                            ticks: { 
+                                stepSize: 1, 
+                                callback: v => ['Ясно', 'Облачно', 'Пасмурно'][v-1] 
+                            }, 
+                            title: { display: true, text: 'Состояние' } 
+                        }
+                    }
+                }
+            });
+            
+            const ctx2 = document.getElementById('convergenceChart').getContext('2d');
+            convergenceChart = new Chart(ctx2, {
+                type: 'line',
+                data: { 
+                    labels: ['0'], 
+                    datasets: [
+                        { label: 'Факт: Ясно', data: [0], borderColor: '#F6E05E', pointRadius: 0 },
+                        { label: 'Факт: Облачно', data: [0], borderColor: '#A0AEC0', pointRadius: 0 },
+                        { label: 'Факт: Пасмурно', data: [0], borderColor: '#4A5568', pointRadius: 0 },
+                        { label: 'Теор: Ясно', data: [0], borderColor: '#F6E05E', borderDash: [5, 5], pointRadius: 0 },
+                        { label: 'Теор: Облачно', data: [0], borderColor: '#A0AEC0', borderDash: [5, 5], pointRadius: 0 },
+                        { label: 'Теор: Пасмурно', data: [0], borderColor: '#4A5568', borderDash: [5, 5], pointRadius: 0 }
+                    ] 
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Дни' }, ticks: { maxTicksLimit: 15 } },
+                        y: { 
+                            min: 0, 
+                            max: 0.5, 
+                            title: { display: true, text: 'Доля времени' },
+                            ticks: { stepSize: 0.05, maxTicksLimit: 12 }
+                        }
+                    }
+                }
+            });
+        }
+
+        function exportToCSV() {
+            if (simulationData.length === 0) {
+                alert('Нет данных для экспорта. Сначала выполните моделирование.');
+                return;
+            }
+            
+            let csv = 'Day,From_State,To_State,Duration\n';
+            simulationData.forEach(d => {
+                csv += `${d.time.toFixed(4)},${d.fromState + 1},${d.toState + 1},${d.duration.toFixed(4)}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'weather_simulation.csv';
+            link.click();
+        }
+
+        window.onload = function() {
+            setTimeout(resetAll, 100);
+        };
+    </script>
+</body>
+</html>
