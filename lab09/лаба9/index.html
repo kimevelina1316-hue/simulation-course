@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>M/M/1/0 - Вероятности (Динамика)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h3 { text-align: center; margin-bottom: 20px; }
+        .row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        .field { text-align: center; }
+        input {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background: #45a049; }
+        .result {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 16px;
+        }
+        .result-label { font-weight: 500; }
+        .result-value { font-weight: bold; color: #333; }
+        .events-log {
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff3cd;
+            border-radius: 5px;
+            font-size: 13px;
+            display: none;
+        }
+        .events-log.show { display: block; }
+        .event { margin: 3px 0; }
+        .event.mu { color: #856404; }
+        .event.lambda { color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h3>M/M/1/0 (Динамические параметры)</h3>
+        
+        <!-- Параметры системы -->
+        <div class="row">
+            <div class="field">
+                <div>λ (вход):</div>
+                <input type="number" id="lambda" value="2.0" step="0.1" min="0.1">
+            </div>
+            <div class="field">
+                <div>μ (обслуж.):</div>
+                <input type="number" id="mu" value="2.5" step="0.1" min="0.1">
+            </div>
+        </div>
+
+        <!--  Поле для времени симуляции -->
+        <div class="row" style="justify-content: center; margin-bottom: 15px;">
+            <div class="field">
+                <div>Время (T):</div>
+                <input type="number" id="maxTime" value="1000" step="100" min="100">
+            </div>
+        </div>
+
+        <button onclick="run()">Запуск</button>
+
+        <div class="result" id="output" style="display:none;">
+            <div class="result-item">
+                <span class="result-label">Вероятность принятия:</span>
+                <span class="result-value" id="pAccept"></span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Вероятность отказа:</span>
+                <span class="result-value" id="pReject"></span>
+            </div>
+        </div>
+
+        <div class="events-log" id="eventsLog"></div>
+    </div>
+
+    <script>
+        function expRand(rate) {
+            return -Math.log(1 - Math.random()) / rate;
+        }
+
+        function run() {
+            const lambdaInput = parseFloat(document.getElementById('lambda').value);
+            const muInput = parseFloat(document.getElementById('mu').value);
+            const maxTimeInput = parseFloat(document.getElementById('maxTime').value);
+            const output = document.getElementById('output');
+            const eventsLog = document.getElementById('eventsLog');
+
+            if (isNaN(lambdaInput) || isNaN(muInput) || lambdaInput <= 0 || muInput <= 0) {
+                alert('Введите положительные числа для λ и μ');
+                return;
+            }
+            if (isNaN(maxTimeInput) || maxTimeInput <= 0) {
+                alert('Введите положительное время симуляции');
+                return;
+            }
+
+            const maxTime = maxTimeInput;
+            let lambda = lambdaInput;
+            let mu = muInput;
+            let muChanged = false;
+            let lambdaChanged = false;
+            const events = [];
+
+            let t = 0, x = 0;
+            let total = 0, accepted = 0, lost = 0;
+            
+            let tau = expRand(lambda);
+            let delta = Infinity;
+
+            // === ЦИКЛ СИМУЛЯЦИИ ===
+            while (t < maxTime) {
+                // Проверка изменений ВНУТРИ цикла
+                if (t >= 300 && !muChanged) {
+                    mu = mu / 2;
+                    muChanged = true;
+                    events.push({ t: 300, msg: `t=300: μ уменьшена в 2 раза → ${mu.toFixed(2)}`, type: 'mu' });
+                }
+                
+                if (t >= 500 && !lambdaChanged) {
+                    lambda = lambda * 2;
+                    lambdaChanged = true;
+                    events.push({ t: 500, msg: `t=500: λ увеличена в 2 раза → ${lambda.toFixed(2)}`, type: 'lambda' });
+                }
+
+                if (tau < delta) {
+                    t += tau;
+                    total++;
+                    if (x === 0) {
+                        x = 1;
+                        accepted++;
+                        delta = expRand(mu);
+                    } else {
+                        lost++;
+                    }
+                    tau = expRand(lambda);
+                } else {
+                    t += delta;
+                    tau -= delta;
+                    x = 0;
+                    delta = Infinity;
+                }
+            }
+
+            //  ФИНАЛЬНАЯ ПРОВЕРКА (чтобы не пропустить события на границе)
+            if (maxTime >= 300 && !muChanged) {
+                mu = mu / 2;
+                muChanged = true;
+                events.push({ t: 300, msg: `t=300: μ уменьшена в 2 раза → ${mu.toFixed(2)}`, type: 'mu' });
+            }
+            
+            if (maxTime >= 500 && !lambdaChanged) {
+                lambda = lambda * 2;
+                lambdaChanged = true;
+                events.push({ t: 500, msg: `t=500: λ увеличена в 2 раза → ${lambda.toFixed(2)}`, type: 'lambda' });
+            }
+
+            // Расчёт вероятностей
+            const pAccept = accepted / total;
+            const pReject = lost / total;
+
+            document.getElementById('pAccept').textContent = pAccept.toFixed(4);
+            document.getElementById('pReject').textContent = pReject.toFixed(4);
+            output.style.display = 'block';
+
+            if (events.length > 0) {
+                eventsLog.innerHTML = '<strong>События во время симуляции:</strong>' + 
+                    events.map(e => `<div class="event ${e.type}">• ${e.msg}</div>`).join('');
+                eventsLog.className = 'events-log show';
+            } else {
+                eventsLog.className = 'events-log';
+            }
+        }
+
+        // Запуск по Enter
+        document.querySelectorAll('input').forEach(inp => {
+            inp.addEventListener('keypress', e => { if(e.key === 'Enter') run(); });
+        });
+    </script>
+</body>
+</html>
